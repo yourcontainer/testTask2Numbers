@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title>Test task</title>
+  <script src="//code.angularjs.org/snapshot/angular.min.js"></script>
+</head>
+<body ng-app="testApp">
+  <div ng-controller="MainController">
+  <form name="userForm" novalidate>
+    <label>
+        First: <input type="number" required ng-model="fnumber" />
+    </label>
+    <p ng-show="userForm.fnumber.$invalid && !userForm.fnumber.$pristine">This is required field</p>
+    <br />
+    <label>
+        Second: <input type="number" required ng-model="snumber" />
+    </label>
+    <p ng-show="userForm.snumber.$invalid && !userForm.snumber.$pristine">This is required field</p>
+    <br />
+    <button ng-click="doSum(fnumber, snumber)"ng-disabled="!userForm.$valid">Sum</button>
+  </form>
+  <pre>result = {{result | json}}</pre>
+</div>
+
+<script>
+  angular.module('testApp', [])
+    .controller('MainController', ['$scope', '$http', function($scope, $http) {
+      const API_URL = 'http://localhost:3000/api/'
+
+      $scope.doSum = function(fnumber, snumber) {
+        $http({
+            method: 'POST',
+            url: API_URL + 'sum',
+            data: { fnumber: fnumber, snumber: snumber }
+            }).then(function (response) {
+                $scope.result = response.data
+            }, function (response) {
+                alert('Something went wrong, try again later')
+            });
+      };
+    }]);
+</script>
+</body>
+</html>
